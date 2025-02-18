@@ -21,6 +21,70 @@ tbs    & grams \\
 \end{document}
 """
 
+weight_tex = r"""\documentclass[convert]{standalone}
+\begin{document}    
+\begin{tabular}{cc}
+\multicolumn{2}{c}{weight} \\
+ounces    & grams \\
+\hline
+16 & 454 \\
+12 & 340 \\
+8  & 227 \\
+4  & 113 \\
+3  & 85 \\
+2  & 57 \\
+1  & 28 \\
+2/3 & 19 \\
+1/2 & 14 \\
+1/3 & 9 \\
+1/4 & 7 \\
+\end{tabular}
+\end{document}
+"""
+
+temp_low_tex = r"""\documentclass[convert]{standalone}
+\begin{document}    
+\begin{tabular}{cc}
+\multicolumn{2}{c}{temperature} \\
+F    & C \\
+\hline
+0 & -18 \\
+10 & -12 \\
+20  & -7 \\
+32  & 0 \\
+40  & 4 \\
+50  & 10 \\
+60  & 16 \\
+70 & 21 \\
+80 & 27 \\
+90 & 32 \\
+100 & 38 \\
+\end{tabular}
+\end{document}
+"""
+
+temp_high_tex = r"""\documentclass[convert]{standalone}
+\begin{document}    
+\begin{tabular}{cc}
+\multicolumn{2}{c}{temperature} \\
+F    & C \\
+\hline
+100 & 38 \\
+150 & 66 \\
+200 & 93 \\
+250 & 121 \\
+300 & 149 \\
+325 & 163 \\
+350 & 177 \\
+375 & 191 \\
+400 & 204 \\
+450 & 232 \\
+500 & 260 \\
+\end{tabular}
+\end{document}
+"""
+
+
 print(base)
 
 substances = {
@@ -47,6 +111,17 @@ substances = {
     "cottage cheese": 2 / 3 * 395,
 }
 
+def write_and_gen(basename, text):
+    with open(basename + "_first.tex", "w") as stream:
+        stream.write(text)
+    subprocess.run(["pdflatex", "--shell-escape", basename + "_first.tex"])
+    subprocess.run(["convert", basename + "_first.png", "-background", "white", "-alpha", "remove", basename + "_final.png"])
+
+write_and_gen("weight", weight_tex)
+write_and_gen("temp_low", temp_low_tex)
+write_and_gen("temp_high", temp_high_tex)
+
+
 for key, cup_grams in substances.items():
     print(key)
     tex = base
@@ -63,7 +138,4 @@ for key, cup_grams in substances.items():
     tex = tex.replace("xyz_1TBS_zyx", str(round(1/16*cup_grams)))
 
     tex_name = f"{key}.tex"
-    with open(tex_name, "w") as stream:
-        stream.write(tex)
-    subprocess.run(["pdflatex", "--shell-escape", tex_name])
-    print("  Done!")
+    write_and_gen(key, tex)
