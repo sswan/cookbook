@@ -20,7 +20,7 @@ Ingredients
 
 * 1 teaspoon salt
 
-* 2 tablespoons magic sauce
+* 2 tablespoons magic sauce (Lao Gan Ma brand Fried Chili in Oil)
 
 
 Directions
